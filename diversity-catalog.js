@@ -1,0 +1,1 @@
+window.DIVERSITY_CATALOG=[{"id":"mustard","label":"Mustard bottle","layout":"table","visibility":0.39298004129387476,"rgb":"assets/diversity-mustard-rgb.jpg"},{"id":"shelf-soup-can","label":"Shelf soup can","layout":"shelf","visibility":0.25964787479992885,"rgb":"assets/diversity-shelf-soup-can-rgb.jpg"}];

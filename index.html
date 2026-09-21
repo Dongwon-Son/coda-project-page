@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="CODA: Depth-Aligned Scene Completion and Object Decomposition from a Single RGB-D Image.">
+  <meta name="robots" content="noindex,nofollow"><meta name="referrer" content="no-referrer">
+  <title>CODA · Depth-Aligned Scene Completion and Object Decomposition</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230d766c'/%3E%3Cpath d='M23 9H13l-5 7 5 7h10' fill='none' stroke='white' stroke-width='4'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<a class="skip" href="#explorer">Skip to interactive examples</a>
+<header class="masthead"><nav class="project-navigation" aria-label="Project navigation"><a class="home-link" href="#top" aria-label="CODA home"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m3 10 9-7 9 7M5 9v12h5v-7h4v7h5V9"/></svg></a><details id="project-menu"><summary>Explore project <span aria-hidden="true">⌄</span></summary><div class="project-menu"><a href="#teaser">Overview</a><a href="#method">Method</a><a href="#speed-comparison">Speed comparison</a><a href="#explorer">Interactive examples</a><a href="#diversity">Diversity &amp; alignment</a></div></details></nav></header>
+<main id="top">
+  <section class="intro">
+    <h1><strong>CODA:</strong> Depth-Aligned Scene Completion and Object Decomposition from a Single RGB-D Image</h1>
+    <p class="authors"><span class="author"><a href="https://dongwon-son.github.io/" target="_blank" rel="noopener noreferrer">Dongwon Son</a><sup>1</sup></span><span class="author">Junhyek Han<sup>1</sup></span><span class="author">Yoontae Cho<sup>1</sup></span><span class="author">Minseok Lee<sup>1</sup></span><span class="author">Hong-seok Choi<sup>2</sup></span><span class="author">Jiwook Choi<sup>2</sup></span><span class="author">Hyungjin Kim<sup>2</sup></span><span class="author"><a href="https://beomjoonkim.github.io/" target="_blank" rel="noopener noreferrer">Beomjoon Kim</a><sup>1</sup></span></p>
+    <p class="affiliations"><span><sup>1</sup> KAIST</span><span><sup>2</sup> Samsung Heavy Industries Co., Ltd.</span></p>
+    <p class="project-motto">Complete Once, Decompose Afterward</p>
+    <nav class="resource-links" aria-label="Project resources">
+      <a class="resource-link" data-resource="paper" role="link" aria-disabled="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 3H6a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8zM14 3v5h5M8 12h8M8 16h6"/></svg><span>Paper</span><small class="resource-status">Coming soon</small></a>
+      <a class="resource-link" data-resource="code" role="link" aria-disabled="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m8 7-5 5 5 5m8-10 5 5-5 5m-3-13-2 20"/></svg><span>Code</span><small class="resource-status">Coming soon</small></a>
+      <a class="resource-link" data-resource="dataset" role="link" aria-disabled="true"><svg viewBox="0 0 24 24" aria-hidden="true"><ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M4 5v14c0 4 16 4 16 0V5M4 12c0 4 16 4 16 0"/></svg><span>Evaluation Dataset</span><small class="resource-status">Coming soon</small></a>
+      <a class="resource-link" href="#speed-comparison"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 5 11 7-11 7z"/></svg><span>Video</span></a>
+      <a class="resource-link" href="#explorer"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 3 9 5v8l-9 5-9-5V8zm0 10 9-5M3 8l9 5v8"/></svg><span>Interactive results</span></a>
+    </nav>
+  </section>
+
+
+  <section class="project-teaser" id="teaser" aria-labelledby="teaser-title">
+    <h2 id="teaser-title">Complete the scene. Then separate its objects.</h2>
+    <figure>
+      <div class="overview-image"><img data-project-asset="assets/coda-overview.png" width="4800" height="1800" alt="CODA overview: observed partial point cloud, depth-grounded complete object meshes, and the illustrated shelf after two seconds of simulated gravity."></div>
+      <figcaption>From one unsegmented RGB-D observation to complete environment and movable-object meshes.</figcaption>
+    </figure>
+    <button class="teaser-expand" id="expand-overview" aria-haspopup="dialog" aria-controls="overview-dialog">Expand overview ↗</button>
+    <div class="tldr"><span>TL;DR</span><p>CODA completes an entire scene from one RGB-D view, then separates it into individual objects. Explicit depth grounding keeps the reconstructed geometry aligned with the observation—so we can test whether the objects stay in place under gravity.</p></div>
+  </section>
+
+  <section class="method-overview" id="method" aria-labelledby="method-title">
+    <div class="section-heading"><div><p class="eyebrow">METHOD OVERVIEW</p><h2 id="method-title">The complete CODA pipeline</h2></div><button class="figure-expand" id="expand-pipeline" aria-haspopup="dialog" aria-controls="pipeline-dialog">Expand figure ↗</button></div>
+    <figure class="pipeline-figure">
+      <img id="pipeline-image" width="3920" height="1796" alt="CODA pipeline: a single RGB-D view conditions coarse occupancy completion, fine scene-mesh reconstruction, and object decomposition. Observed-surface initialization and depth-guided feature matching ground the geometry. A texture flow assigns object-identity codes, and nearest-code assignment separates environment and object meshes.">
+      <figcaption><strong>Figure 2.</strong> CODA first completes coarse occupancy, then reconstructs the scene surface, and finally separates it into environment and object meshes. RGB-D conditioning grounds all three stages; the texture flow produces object-identity codes for decomposition.</figcaption>
+    </figure>
+  </section>
+
+  <section class="project-video-section speed-comparison" id="speed-comparison" aria-labelledby="speed-video-title">
+    <div class="section-heading"><div><p class="eyebrow">RECONSTRUCTION SPEED → ACCURACY → RETENTION</p><h2 id="speed-video-title">Five methods. Speed, accuracy, and retention.</h2></div><a class="video-download" data-project-asset="videos/coda-speed-and-retention.mp4" download="CODA_Five_Methods_Speed_Accuracy_and_Retention.mp4">Download video ↗</a></div>
+    <video id="speed-video" controls playsinline preload="none" data-project-video="videos/coda-speed-and-retention.mp4" data-project-poster="assets/speed-comparison-poster.jpg" aria-label="Five-method reconstruction timing, input-view and complete-surface F@5 error maps, then the Scene 29 retention tests"></video>
+    <div class="video-chapters" role="group" aria-label="Speed comparison chapters"><button data-video-target="#speed-video" data-video-time="3"><span>00:03</span> Gradual reconstruction</button><button data-video-target="#speed-video" data-video-time="14.433333"><span>00:14</span> ASTRA at 200×</button><button data-video-target="#speed-video" data-video-time="25"><span>00:25</span> Input-view F@5</button><button data-video-target="#speed-video" data-video-time="31"><span>00:31</span> Complete F@5</button><button data-video-target="#speed-video" data-video-time="37"><span>00:37</span> Gravity test</button><button data-video-target="#speed-video" data-video-time="43"><span>00:43</span> Results</button></div>
+    <div class="speed-table-wrap" tabindex="0" role="region" aria-label="Reconstruction time, HB and Custom results; scroll horizontally on smaller screens">
+      <table class="speed-table">
+        <caption>Reconstruction time and results</caption>
+        <colgroup span="2"></colgroup><colgroup span="3"></colgroup><colgroup span="3"></colgroup>
+        <thead>
+          <tr><th id="metric-method" scope="col" rowspan="2">Method</th><th id="metric-time" scope="col" rowspan="2">Reconstruction<br>time ↓</th><th id="metric-hb" class="group-start" scope="colgroup" colspan="3">HomebrewedDB (HB)</th><th id="metric-custom" class="group-start" scope="colgroup" colspan="3">Custom</th></tr>
+          <tr><th id="metric-hb-retained" scope="col" class="group-start">Retained ↑</th><th id="metric-hb-complete" scope="col">F@5 complete ↑</th><th id="metric-hb-input" scope="col">F@5 input view ↑</th><th id="metric-custom-retained" scope="col" class="group-start">Retained ↑</th><th id="metric-custom-complete" scope="col">F@5 complete ↑</th><th id="metric-custom-input" scope="col">F@5 input view ↑</th></tr>
+        </thead>
+        <tbody>
+          <tr class="ours"><th id="method-coda" scope="row">CODA</th><td headers="method-coda metric-time">5.59 s</td><td headers="method-coda metric-hb metric-hb-retained" class="group-start"><strong>78.52%</strong></td><td headers="method-coda metric-hb metric-hb-complete"><strong>0.6789</strong></td><td headers="method-coda metric-hb metric-hb-input"><strong>0.9214</strong></td><td headers="method-coda metric-custom metric-custom-retained" class="group-start"><strong>76.61%</strong></td><td headers="method-coda metric-custom metric-custom-complete"><strong>0.6879</strong></td><td headers="method-coda metric-custom metric-custom-input"><strong>0.9331</strong></td></tr>
+          <tr><th id="method-zerograsp" scope="row">ZeroGrasp</th><td headers="method-zerograsp metric-time"><strong>1.54 s</strong></td><td headers="method-zerograsp metric-hb metric-hb-retained" class="group-start">17.70%</td><td headers="method-zerograsp metric-hb metric-hb-complete">0.5674</td><td headers="method-zerograsp metric-hb metric-hb-input">0.9184</td><td headers="method-zerograsp metric-custom metric-custom-retained" class="group-start">7.13%</td><td headers="method-zerograsp metric-custom metric-custom-complete">0.5746</td><td headers="method-zerograsp metric-custom metric-custom-input">0.9188</td></tr>
+          <tr><th id="method-sam3d" scope="row">SAM3D</th><td headers="method-sam3d metric-time">85.08 s</td><td headers="method-sam3d metric-hb metric-hb-retained" class="group-start">35.71%</td><td headers="method-sam3d metric-hb metric-hb-complete">0.5223</td><td headers="method-sam3d metric-hb metric-hb-input">0.7240</td><td headers="method-sam3d metric-custom metric-custom-retained" class="group-start">24.94%</td><td headers="method-sam3d metric-custom metric-custom-complete">0.5685</td><td headers="method-sam3d metric-custom metric-custom-input">0.7899</td></tr>
+          <tr><th id="method-recgen" scope="row">RecGen</th><td headers="method-recgen metric-time">100.15 s</td><td headers="method-recgen metric-hb metric-hb-retained" class="group-start">47.14%</td><td headers="method-recgen metric-hb metric-hb-complete">0.5929</td><td headers="method-recgen metric-hb metric-hb-input">0.8369</td><td headers="method-recgen metric-custom metric-custom-retained" class="group-start">25.84%</td><td headers="method-recgen metric-custom metric-custom-complete">0.6007</td><td headers="method-recgen metric-custom metric-custom-input">0.8336</td></tr>
+          <tr><th id="method-astra" scope="row">ASTRA</th><td headers="method-astra metric-time">28.1 min</td><td headers="method-astra metric-hb metric-hb-retained" class="group-start">76.30%</td><td headers="method-astra metric-hb metric-hb-complete">0.5501</td><td headers="method-astra metric-hb metric-hb-input">0.6877</td><td headers="method-astra metric-custom metric-custom-retained" class="group-start"><span class="not-available" aria-label="Not available">—</span></td><td headers="method-astra metric-custom metric-custom-complete"><span class="not-available" aria-label="Not available">—</span></td><td headers="method-astra metric-custom metric-custom-input"><span class="not-available" aria-label="Not available">—</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <details class="speed-scope metric-definitions">
+      <summary>What do F@5 complete and F@5 input view measure?</summary>
+      <p><strong>F@5</strong> is a surface F1 score with a <strong>5 mm tolerance</strong>. It balances how much of the reconstructed surface is close to the reference surface and how much of the reference surface is covered by the reconstruction. Scores range from 0 to 1; higher is better.</p>
+      <p><strong>F@5 complete</strong> compares the reconstructed object with its full reference shape, including parts hidden from the camera. It measures how accurately the method completes the whole object.</p>
+      <p><strong>F@5 input view</strong> measures agreement with the surface observed in the input RGB-D image. It measures how well the reconstruction aligns with the observed depth.</p>
+    </details>
+  </section>
+
+  <section class="explorer" id="explorer" aria-label="Interactive scene examples">
+    <div class="section-heading"><div><p class="eyebrow">FROM OBSERVATION TO SIMULATION</p><h2>One view. A complete, separated scene.</h2></div><span class="example-count">15 recorded examples</span></div>
+    <ol class="pipeline"><li><span>01</span> RGB-D observation</li><li><span>02</span> Partial point cloud</li><li><span>03</span> Reconstruction</li><li><span>04</span> Retention test</li></ol>
+    <div class="scene-bar"><div><span id="dataset-label" class="dataset-label">CUSTOM</span><h3 id="scene-title">Loading example…</h3></div><p id="scene-count"></p></div>
+    <div class="comparison-bar"><label for="baseline-method">Compare CODA with</label><select id="baseline-method"><option value="recgen">RecGen</option><option value="sam3d">SAM3D</option><option value="zerograsp">ZeroGrasp</option><option value="astra">ASTRA</option><option value="none">CODA only</option></select><span>Linked camera · Linked replay time</span></div>
+    <div class="workspace">
+      <aside class="observation">
+        <div class="panel-toolbar"><span>Input observation</span><div class="segmented" role="group" aria-label="Input modality"><button class="selected" data-input="rgb" aria-pressed="true">RGB</button><button data-input="depth" aria-pressed="false">Depth</button></div></div>
+        <div class="input-picture"><img id="input-image" alt="RGB observation of the selected scene"><div id="depth-key" hidden><span>Near</span><i></i><span>Far</span></div></div>
+        <p class="input-caption" id="input-caption">A single unsegmented RGB-D observation.</p>
+        <div class="observation-note"><span class="note-number">1</span><p>One observed view.<br><strong>No input instance masks.</strong></p></div>
+      </aside>
+      <div class="visual-panel">
+        <div class="panel-toolbar viewer-toolbar"><div class="segmented stages" role="group" aria-label="3D pipeline stage"><button data-stage="points" aria-pressed="false">Partial cloud</button><button data-stage="reconstruction" aria-pressed="false">Reconstruction</button><button data-stage="retention" class="selected" aria-pressed="true">Retention test</button></div><button class="icon-button" id="fullscreen" aria-label="Expand 3D view" title="Expand view">⛶</button></div>
+        <div class="viewport" id="viewport"><canvas id="scene-canvas" tabindex="0" aria-label="Interactive 3D scene. Drag to orbit, scroll to zoom, right-drag to pan. Arrow keys orbit, plus and minus zoom."></canvas><div id="loading" role="status">Loading scene…</div><div class="view-badge" id="view-badge">Native reconstruction meshes</div><div class="method-labels" id="method-labels"><span id="coda-label">CODA</span><span id="baseline-label"></span></div><div id="baseline-unavailable" hidden role="status"></div><span class="axis-label">Z ↑</span><div id="fallback" hidden><p>Interactive 3D is unavailable in this browser.</p><a id="fallback-link" href="#">Watch the recorded replay</a></div></div>
+        <div class="view-controls"><div class="camera-presets" role="group" aria-label="Camera view"><button id="camera-default">Oblique</button><button id="camera-input">Input view</button><button id="camera-top">Top</button><button id="camera-reset" aria-label="Reset camera">Reset ↺</button></div><label class="overlay"><input id="point-overlay" type="checkbox" checked><i class="point-legend"></i> Observed points</label></div>
+        <div class="replay-controls" id="replay-controls" hidden><button id="play" aria-label="Play recorded two-second retention test">▶ Play</button><label class="timeline"><span class="sr-only">Simulation time</span><input id="timeline" type="range" min="0" max="1000" value="0" step="1"></label><output id="time-label">0.00 / 2.00 s</output><label class="speed"><span class="sr-only">Playback speed</span><select id="speed"><option value="0.25">0.25×</option><option value="0.5">0.5×</option><option value="1" selected>1×</option></select></label></div>
+        <div id="retention-outcomes" hidden>
+          <div class="outcome-legend"><label><input id="show-outcomes" type="checkbox" checked> Show object outcomes</label><span class="outcome-pass">✓ Passed</span><span class="outcome-fail">× Failed</span><span>↘ Outside view</span></div>
+          <p id="outcome-protocol"></p>
+          <details class="object-result-details"><summary>Inspect object results</summary><div id="object-results"></div><p id="object-detail" role="status"></p><p class="object-id-note">Numbers identify predictions within each method; equal numbers do not imply a match.</p></details>
+        </div>
+        <p class="viewer-hint"><span id="stage-description">Colors distinguish predicted objects.</span><span>Drag to orbit · Scroll to zoom</span></p>
+      </div>
+    </div>
+    <div class="scene-summary"><p id="evaluation-note"></p><span id="retention-result"></span><button id="watch-video">CODA replay video ↗</button></div>
+
+    <div class="method-results" id="method-results" aria-label="Retention scores by method"></div><p class="comparison-note" id="comparison-note"></p>
+    <div class="gallery-section" id="examples"><div class="gallery-heading"><h3>HomebrewedDB <span>HB</span></h3><p>Six tabletop observations</p></div><div class="example-grid" id="hb-gallery" aria-label="HomebrewedDB examples"></div></div>
+    <div class="gallery-section"><div class="gallery-heading"><h3>Custom scenes</h3><p>Nine observations across shelves and tables</p></div><div class="example-grid" id="custom-gallery" aria-label="Custom dataset examples"></div></div>
+  </section>
+
+  <section class="diversity-section" id="diversity" aria-labelledby="diversity-title">
+    <div class="section-heading"><div><p class="eyebrow">FIGURE 7 · DIVERSITY AND ALIGNMENT</p><h2 id="diversity-title">One observation. Eight possible completions.</h2></div></div>
+    <p class="diversity-intro">Explore supplementary examples from the paper’s diversity evaluation in 3D. Compare how the saved completions vary behind the observed surface, while checking their alignment with the same RGB-D points.</p>
+    <div class="diversity-casebar" role="group" aria-label="Figure 7 object"><button data-diversity-case="mustard" class="selected" aria-pressed="true">Mustard bottle <span>Table · 39.3% visible</span></button><button data-diversity-case="shelf-soup-can" aria-pressed="false">Shelf soup can <span>Shelf · 26.0% visible</span></button></div>
+    <div class="diversity-context"><div class="diversity-inputs"><figure class="diversity-input"><div class="diversity-picture" id="diversity-rgb-picture"><img id="diversity-rgb" width="512" height="512" alt="Original RGB observation"><span id="diversity-target-box" aria-hidden="true"></span></div><figcaption id="diversity-rgb-caption">RGB</figcaption></figure><figure class="diversity-input" id="diversity-depth-figure" hidden><div class="diversity-picture" id="diversity-depth-picture"><img id="diversity-depth" width="512" height="512" alt="Saved depth observation"></div><figcaption>Depth · 3–30 cm</figcaption></figure></div><div><h3 id="diversity-object-title">Mustard bottle</h3><p id="diversity-case-info">Eight fixed seeds per method, from the same input.</p><p class="diversity-annotation" id="diversity-input-note">White box: target object, marked for display.</p><p class="diversity-geometry">The 3D view uses saved surface samples from the paper’s reconstructions.</p></div></div>
+    <div class="diversity-controls"><label>Completion <select id="diversity-sample"><option value="all">All 8 seeds</option><option value="0">Seed 1</option><option value="1">Seed 2</option><option value="2">Seed 3</option><option value="3">Seed 4</option><option value="4">Seed 5</option><option value="5">Seed 6</option><option value="6">Seed 7</option><option value="7">Seed 8</option><option value="best">GT-best of 8 (oracle)</option></select></label><label>Region <select id="diversity-region"><option value="all">All surfaces</option><option value="visible">Observed surface region</option><option value="hidden">Hidden / unobserved region</option></select></label><label><input id="diversity-observed" type="checkbox" checked> <span id="diversity-observed-label">Observed RGB points</span></label><label><input id="diversity-gt" type="checkbox" checked> Ground truth</label></div>
+    <div class="diversity-viewport" id="diversity-viewport"><canvas id="diversity-canvas" tabindex="0" aria-label="Linked CODA and RecGen 3D completions. Drag to orbit, scroll to zoom, right-drag to pan. Arrow keys orbit; plus and minus zoom."></canvas><div class="diversity-labels"><span>CODA</span><span>RecGen</span></div><div id="diversity-loading" role="status">Loading saved completions…</div><div id="diversity-error" role="alert" hidden></div></div>
+    <div class="diversity-viewbar"><div role="group" aria-label="Diversity camera"><button id="diversity-paper-view">Object view</button><button id="diversity-input-view">Input angle</button><button id="diversity-fit">Fit all samples</button><button id="diversity-reset">Reset view</button></div><span>Linked camera · Drag to orbit · Scroll to zoom</span></div>
+    <div class="diversity-seeds" id="diversity-seeds" role="group" aria-label="Select a seed"></div>
+    <p id="diversity-mode-note" class="diversity-mode-note" aria-live="polite"></p>
+    <div class="diversity-metrics" id="diversity-metrics" aria-label="Figure 7 eight-seed metrics"></div>
+    <details class="diversity-details"><summary>How to read this comparison</summary><p>RGB points are the observed target surface; the optional gray reference is ground truth. Colors distinguish the eight fixed seeds. GT-best shows each method’s highest-scoring sample using ground truth—an oracle choice, not an input-only selection.</p><p>F<sub>v</sub> is mean visible F1 and F* is best complete F1, both at 10 mm. D<sub>vis</sub> and D<sub>hid</sub> measure pairwise voxel disagreement across all eight samples: lower visible disagreement means greater consistency; hidden diversity describes variation, not correctness. Values are the saved evaluation metrics, independent of the display controls.</p></details>
+  </section>
+
+
+</main>
+<dialog id="video-dialog"><div class="dialog-heading"><h3 id="video-title">Recorded retention test</h3><button id="close-video" aria-label="Close video">×</button></div><video id="replay-video" controls autoplay muted loop playsinline preload="metadata"></video><p>Saved 2 s trajectory, shown at normal speed. Teal ✓ = passed; orange × = failed. Badges reveal the full-test outcome only at 1.20–2.00 s of simulation time; numbers identify objects. Edge badges keep objects that leave the view visible.</p></dialog>
+<dialog id="pipeline-dialog" aria-labelledby="pipeline-dialog-title"><div class="dialog-heading"><h3 id="pipeline-dialog-title">Figure 2 · CODA pipeline</h3><button id="close-pipeline" aria-label="Close pipeline figure">×</button></div><div class="pipeline-scroll" tabindex="0" role="region" aria-label="Full-size pipeline figure; scroll horizontally to inspect"><img id="pipeline-full-image" width="3920" height="1796" alt="Enlarged CODA pipeline diagram"></div><p>Scroll across the figure to inspect the details.</p></dialog>
+<dialog id="overview-dialog" aria-labelledby="overview-dialog-title"><div class="dialog-heading"><h3 id="overview-dialog-title">CODA · Complete, separate, and simulate</h3><button id="close-overview" aria-label="Close overview">×</button></div><div class="overview-scroll" tabindex="0" role="region" aria-label="Full-resolution overview; scroll horizontally to inspect"><div class="overview-image"><img data-project-asset="assets/coda-overview.png" width="4800" height="1800" alt="Enlarged CODA overview from observed points to complete objects and the illustrated gravity-test result."></div></div><p>The final panel is the paper’s AI-retouched illustration.</p></dialog>
+<noscript><p class="noscript">Enable JavaScript to view the figures and project video.</p></noscript>
+<script src="resource-links.js"></script><script src="catalog.js"></script><script src="baselines.js"></script><script src="pipeline.js"></script><script src="project.js"></script><script src="viewer.js"></script><script src="diversity-catalog.js"></script><script src="diversity.js"></script>
+</body></html>
