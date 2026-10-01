@@ -1,6 +1,6 @@
 // Add the final URLs here when these resources are ready; empty values stay inactive.
 const CODA_RESOURCE_LINKS = {
-  paper: '',
+  paper: 'https://arxiv.org/abs/2609.25654',
   code: 'https://github.com/iMSquared/CODA/tree/release',
   dataset: 'https://huggingface.co/datasets/HugeLab/CODA',
 };
